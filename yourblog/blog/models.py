@@ -1,11 +1,21 @@
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+class PublishedManager(models.Manager):
+    """Конкретно-прикладной менеджер опубликованных постов."""
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset()\
+            .filter(status=Post.Status.PUBLISHED)
+
+
 class Post(models.Model):
+    """Модель создания поста."""
 
     class Status(models.TextChoices):
+        """Класс позволяющий определять статус публикации поста."""
         DRAFT = 'DF', 'Draft'
         PUBLISHED = 'PB', 'Published'
 
@@ -23,8 +33,11 @@ class Post(models.Model):
     status = models.CharField(
         max_length=2, choices=Status.choices, default=Status.DRAFT
     )
+    objects = models.Manager()
+    published = PublishedManager()
 
     class Meta:
+        """Класс для определения метаданных модели Post."""
         ordering = ['-publish']
         indexes = [
             models.Index(fields=['-publish']),
