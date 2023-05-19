@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 
-from .models import Post, Comment
+from .models import Post
 from .forms import EmailPostForm, CommentForm
 
 
@@ -25,6 +25,7 @@ def post_detail(request, year, month, day, post):
         publish__day=day
     )
     comments = post.comments.filter(active=True)
+
     form = CommentForm()
     context = {'post': post,
                'form': form,
