@@ -25,7 +25,6 @@ def post_detail(request, year, month, day, post):
         publish__day=day
     )
     comments = post.comments.filter(active=True)
-
     form = CommentForm()
     context = {'post': post,
                'form': form,
